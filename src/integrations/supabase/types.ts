@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      drugs: {
+        Row: {
+          active_ingredient: string
+          brand_name: string
+          contraindications: string | null
+          created_at: string
+          drug_group: string | null
+          id: string
+          indications: string | null
+          last_tested: string | null
+          mastery_score: number
+          times_correct: number
+          times_tested: number
+          updated_at: string
+        }
+        Insert: {
+          active_ingredient: string
+          brand_name: string
+          contraindications?: string | null
+          created_at?: string
+          drug_group?: string | null
+          id?: string
+          indications?: string | null
+          last_tested?: string | null
+          mastery_score?: number
+          times_correct?: number
+          times_tested?: number
+          updated_at?: string
+        }
+        Update: {
+          active_ingredient?: string
+          brand_name?: string
+          contraindications?: string | null
+          created_at?: string
+          drug_group?: string | null
+          id?: string
+          indications?: string | null
+          last_tested?: string | null
+          mastery_score?: number
+          times_correct?: number
+          times_tested?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      session_results: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          drug_id: string
+          id: string
+          is_correct: boolean
+          points_earned: number
+          question_type: string
+          user_answer: string | null
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          drug_id: string
+          id?: string
+          is_correct: boolean
+          points_earned?: number
+          question_type: string
+          user_answer?: string | null
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          drug_id?: string
+          id?: string
+          is_correct?: boolean
+          points_earned?: number
+          question_type?: string
+          user_answer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_results_drug_id_fkey"
+            columns: ["drug_id"]
+            isOneToOne: false
+            referencedRelation: "drugs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          best_streak: number
+          created_at: string
+          current_streak: number
+          id: string
+          total_answered: number
+          total_correct: number
+          total_sessions: number
+          total_xp: number
+          updated_at: string
+        }
+        Insert: {
+          best_streak?: number
+          created_at?: string
+          current_streak?: number
+          id?: string
+          total_answered?: number
+          total_correct?: number
+          total_sessions?: number
+          total_xp?: number
+          updated_at?: string
+        }
+        Update: {
+          best_streak?: number
+          created_at?: string
+          current_streak?: number
+          id?: string
+          total_answered?: number
+          total_correct?: number
+          total_sessions?: number
+          total_xp?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
