@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Plus, Trash2, Loader2 } from "lucide-react";
+import { Sparkles, Plus, Trash2, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Drug {
@@ -21,7 +21,7 @@ interface DrugLabProps {
 }
 
 export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
-  const [brandName, setBrandName] = useState("");
+  const [brandNames, setBrandNames] = useState<string[]>([""]);
   const [activeIngredient, setActiveIngredient] = useState("");
   const [drugGroup, setDrugGroup] = useState("");
   const [indications, setIndications] = useState("");
@@ -29,9 +29,20 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
   const [isEnriching, setIsEnriching] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const updateBrandName = (index: number, value: string) => {
+    setBrandNames((prev) => prev.map((n, i) => (i === index ? value : n)));
+  };
+
+  const addBrandField = () => setBrandNames((prev) => [...prev, ""]);
+
+  const removeBrandField = (index: number) => {
+    if (brandNames.length <= 1) return;
+    setBrandNames((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleEnrich = async () => {
-    const searchTerm = brandName || activeIngredient;
-    if (!searchTerm.trim()) {
+    const searchTerm = brandNames[0]?.trim() || activeIngredient.trim();
+    if (!searchTerm) {
       toast.error("Enter a brand name or active ingredient first");
       return;
     }
@@ -50,7 +61,19 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
         throw new Error(err.error || "Failed to enrich");
       }
       const data = await res.json();
-      setBrandName(data.brand_name || brandName);
+
+      // If AI returned brand_names array, merge with existing
+      if (data.brand_names && Array.isArray(data.brand_names)) {
+        const existing = brandNames.filter((n) => n.trim());
+        const merged = [...new Set([...existing, ...data.brand_names])];
+        setBrandNames(merged.length > 0 ? merged : [""]);
+      } else if (data.brand_name) {
+        // Single brand returned — set first field if empty
+        if (!brandNames[0]?.trim()) {
+          updateBrandName(0, data.brand_name);
+        }
+      }
+
       setActiveIngredient(data.active_ingredient || activeIngredient);
       setDrugGroup(data.drug_group || "");
       setIndications(data.indications || "");
@@ -64,28 +87,28 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
   };
 
   const handleSave = async () => {
-    if (!brandName.trim() || !activeIngredient.trim()) {
-      toast.error("Brand name and active ingredient are required");
+    const validBrands = brandNames.map((n) => n.trim()).filter(Boolean);
+    if (validBrands.length === 0 || !activeIngredient.trim()) {
+      toast.error("At least one brand name and active ingredient are required");
       return;
     }
     setIsSaving(true);
-    const { error } = await supabase.from("drugs").insert({
-      brand_name: brandName.trim(),
+
+    const rows = validBrands.map((brand) => ({
+      brand_name: brand,
       active_ingredient: activeIngredient.trim(),
       drug_group: drugGroup.trim() || null,
       indications: indications.trim() || null,
       contraindications: contraindications.trim() || null,
-    });
+    }));
+
+    const { error } = await supabase.from("drugs").insert(rows);
     setIsSaving(false);
     if (error) {
-      toast.error("Failed to save drug");
+      toast.error("Failed to save drug(s)");
     } else {
-      toast.success("Drug added to lab");
-      setBrandName("");
-      setActiveIngredient("");
-      setDrugGroup("");
-      setIndications("");
-      setContraindications("");
+      toast.success(`${validBrands.length} drug(s) added to lab`);
+      clearForm();
       onRefresh();
     }
   };
@@ -100,7 +123,7 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
   };
 
   const clearForm = () => {
-    setBrandName("");
+    setBrandNames([""]);
     setActiveIngredient("");
     setDrugGroup("");
     setIndications("");
@@ -126,12 +149,40 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-3">
-          <Input
-            placeholder="Brand Name (e.g. Lipitor)"
-            value={brandName}
-            onChange={(e) => setBrandName(e.target.value)}
-            className="h-11"
-          />
+          {/* Brand Names */}
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground">Brand Name(s)</label>
+            {brandNames.map((name, index) => (
+              <div key={index} className="flex gap-2">
+                <Input
+                  placeholder={index === 0 ? "Brand Name (e.g. Lipitor)" : "Another brand name"}
+                  value={name}
+                  onChange={(e) => updateBrandName(index, e.target.value)}
+                  className="h-11 flex-1"
+                />
+                {brandNames.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeBrandField(index)}
+                    className="h-11 w-11 shrink-0 text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={addBrandField}
+              className="text-xs text-muted-foreground gap-1"
+            >
+              <Plus className="h-3 w-3" />
+              Add another brand
+            </Button>
+          </div>
+
           <Input
             placeholder="Active Ingredient (e.g. Atorvastatin)"
             value={activeIngredient}
@@ -161,7 +212,7 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
         <div className="flex gap-2">
           <Button onClick={handleSave} disabled={isSaving} className="flex-1 h-11 gap-2">
             {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            Save Drug
+            Save Drug{brandNames.filter((n) => n.trim()).length > 1 ? "s" : ""}
           </Button>
           <Button variant="outline" onClick={clearForm} className="h-11">
             Clear

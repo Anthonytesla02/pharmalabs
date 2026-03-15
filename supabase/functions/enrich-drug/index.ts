@@ -24,11 +24,11 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a pharmacology expert. Return accurate drug information using medical terminology."
+            content: "You are a pharmacology expert. Return accurate drug information using medical terminology. When given a drug name or active ingredient, provide ALL known brand names for that drug."
           },
           {
             role: "user",
-            content: `Provide information for the drug "${drug_name}". I need: the brand name, active ingredient (generic name), drug group/class, common indications/uses, and major contraindications.`
+            content: `Provide information for the drug "${drug_name}". I need: all known brand names (as an array), the active ingredient (generic name), drug group/class, common indications/uses, and major contraindications.`
           }
         ],
         tools: [
@@ -36,17 +36,22 @@ serve(async (req) => {
             type: "function",
             function: {
               name: "provide_drug_info",
-              description: "Return structured drug information",
+              description: "Return structured drug information with multiple brand names",
               parameters: {
                 type: "object",
                 properties: {
-                  brand_name: { type: "string", description: "The brand/trade name of the drug" },
+                  brand_names: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "All known brand/trade names for this drug"
+                  },
+                  brand_name: { type: "string", description: "The most common brand/trade name" },
                   active_ingredient: { type: "string", description: "The generic/active ingredient name" },
                   drug_group: { type: "string", description: "Pharmacological class or drug group" },
                   indications: { type: "string", description: "Common indications/uses, comma-separated" },
                   contraindications: { type: "string", description: "Major contraindications, comma-separated" }
                 },
-                required: ["brand_name", "active_ingredient", "drug_group", "indications", "contraindications"],
+                required: ["brand_names", "brand_name", "active_ingredient", "drug_group", "indications", "contraindications"],
                 additionalProperties: false
               }
             }
