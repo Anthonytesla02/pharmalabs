@@ -1,1 +1,4 @@
 project_id = "csoumtjekfdhjgkfjmgq"
+
+[functions.enrich-drug]
+verify_jwt = false
