@@ -13,6 +13,8 @@ interface Drug {
   indications: string | null;
   contraindications: string | null;
   mastery_score: number;
+  times_tested: number;
+  times_correct: number;
 }
 
 interface PracticeSessionProps {
