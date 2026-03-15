@@ -66,32 +66,28 @@ export default function Index() {
 
       {/* Bottom Tab Bar */}
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50">
-        <div className="container max-w-lg mx-auto">
-          <TabsList className="w-full h-14 bg-transparent rounded-none grid grid-cols-3 p-0" asChild>
-            <div className="flex">
-              <button
-                onClick={() => setActiveTab("lab")}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "lab" ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <FlaskConical className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Lab</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("practice")}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "practice" ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <Play className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Practice</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("stats")}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "stats" ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <BarChart3 className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Stats</span>
-              </button>
-            </div>
-          </TabsList>
+        <div className="container max-w-lg mx-auto flex">
+          <button
+            onClick={() => setActiveTab("lab")}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "lab" ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <FlaskConical className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Lab</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("practice")}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "practice" ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <Play className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Practice</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("stats")}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "stats" ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <BarChart3 className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Stats</span>
+          </button>
         </div>
       </nav>
     </div>
