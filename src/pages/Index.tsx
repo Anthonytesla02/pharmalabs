@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FlaskConical, Play, BarChart3 } from "lucide-react";
+import { FlaskConical, Play, BarChart3, Database } from "lucide-react";
 import DrugLab from "@/components/DrugLab";
+import DrugDatabase from "@/components/DrugDatabase";
 import PracticeSession from "@/components/PracticeSession";
 import Dashboard from "@/components/Dashboard";
 
@@ -55,6 +56,9 @@ export default function Index() {
           <TabsContent value="lab">
             <DrugLab drugs={drugs} onRefresh={fetchDrugs} />
           </TabsContent>
+          <TabsContent value="database">
+            <DrugDatabase drugs={drugs} onRefresh={fetchDrugs} />
+          </TabsContent>
           <TabsContent value="practice">
             <PracticeSession drugs={drugs} onRefresh={fetchDrugs} />
           </TabsContent>
@@ -73,6 +77,13 @@ export default function Index() {
           >
             <FlaskConical className="h-5 w-5" />
             <span className="text-[10px] font-medium">Lab</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("database")}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "database" ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <Database className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Drugs</span>
           </button>
           <button
             onClick={() => setActiveTab("practice")}

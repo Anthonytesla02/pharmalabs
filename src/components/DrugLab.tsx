@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Plus, Trash2, Loader2, X } from "lucide-react";
+import { Sparkles, Plus, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Drug {
@@ -113,14 +113,6 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("drugs").delete().eq("id", id);
-    if (error) toast.error("Failed to delete");
-    else {
-      toast.success("Drug removed");
-      onRefresh();
-    }
-  };
 
   const clearForm = () => {
     setBrandNames([""]);
@@ -220,46 +212,6 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
         </div>
       </div>
 
-      {/* Drug List */}
-      <div className="space-y-2">
-        <h2 className="text-sm font-medium text-muted-foreground px-1">
-          Drug Database ({drugs.length})
-        </h2>
-        {drugs.length === 0 ? (
-          <div className="card-surface p-8 text-center text-muted-foreground">
-            No drugs yet. Add your first drug above.
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {drugs.map((drug) => (
-              <div key={drug.id} className="card-surface-hover p-4 flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-semibold text-foreground">{drug.brand_name}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                      Lvl {Math.min(5, Math.floor(drug.mastery_score / 20) + 1)}
-                    </span>
-                  </div>
-                  <p className="text-sm font-mono-clinical text-muted-foreground mt-0.5">
-                    {drug.active_ingredient}
-                  </p>
-                  {drug.drug_group && (
-                    <p className="text-xs text-muted-foreground mt-1">{drug.drug_group}</p>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(drug.id)}
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
