@@ -56,6 +56,9 @@ export default function Index() {
           <TabsContent value="lab">
             <DrugLab drugs={drugs} onRefresh={fetchDrugs} />
           </TabsContent>
+          <TabsContent value="database">
+            <DrugDatabase drugs={drugs} onRefresh={fetchDrugs} />
+          </TabsContent>
           <TabsContent value="practice">
             <PracticeSession drugs={drugs} onRefresh={fetchDrugs} />
           </TabsContent>
