@@ -79,6 +79,13 @@ export default function Index() {
             <span className="text-[10px] font-medium">Lab</span>
           </button>
           <button
+            onClick={() => setActiveTab("database")}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "database" ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <Database className="h-5 w-5" />
+            <span className="text-[10px] font-medium">Drugs</span>
+          </button>
+          <button
             onClick={() => setActiveTab("practice")}
             className={`flex-1 flex flex-col items-center justify-center gap-0.5 h-14 transition-colors ${activeTab === "practice" ? "text-primary" : "text-muted-foreground"}`}
           >
