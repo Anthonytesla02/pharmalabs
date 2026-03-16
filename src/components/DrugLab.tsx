@@ -113,14 +113,6 @@ export default function DrugLab({ drugs, onRefresh }: DrugLabProps) {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("drugs").delete().eq("id", id);
-    if (error) toast.error("Failed to delete");
-    else {
-      toast.success("Drug removed");
-      onRefresh();
-    }
-  };
 
   const clearForm = () => {
     setBrandNames([""]);
