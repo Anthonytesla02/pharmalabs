@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FlaskConical, Play, BarChart3 } from "lucide-react";
+import { FlaskConical, Play, BarChart3, Database } from "lucide-react";
 import DrugLab from "@/components/DrugLab";
+import DrugDatabase from "@/components/DrugDatabase";
 import PracticeSession from "@/components/PracticeSession";
 import Dashboard from "@/components/Dashboard";
 
