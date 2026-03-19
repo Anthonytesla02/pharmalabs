@@ -22,7 +22,7 @@ interface PracticeSessionProps {
   onRefresh: () => void;
 }
 
-type QuestionType = "brand_to_ingredient" | "ingredient_to_brand";
+type QuestionType = "brand_to_ingredient";
 
 interface Question {
   drug: Drug;
@@ -56,12 +56,11 @@ export default function PracticeSession({ drugs, onRefresh }: PracticeSessionPro
 
     // Generate questions: mix of brand→ingredient and ingredient→brand
     const qs: Question[] = selected.map((drug) => {
-      const type: QuestionType = Math.random() > 0.5 ? "brand_to_ingredient" : "ingredient_to_brand";
       return {
         drug,
-        type,
-        prompt: type === "brand_to_ingredient" ? drug.brand_name : drug.active_ingredient,
-        answer: type === "brand_to_ingredient" ? drug.active_ingredient : drug.brand_name,
+        type: "brand_to_ingredient" as QuestionType,
+        prompt: drug.brand_name,
+        answer: drug.active_ingredient,
       };
     });
 
@@ -230,7 +229,7 @@ export default function PracticeSession({ drugs, onRefresh }: PracticeSessionPro
       {/* Card */}
       <div className={`card-surface p-6 w-full space-y-4 ${shakeCard ? "animate-shake" : ""} ${feedback === "correct" ? "ring-2 ring-success/30" : ""}`}>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          {current.type === "brand_to_ingredient" ? "What is the active ingredient?" : "What is the brand name?"}
+          What is the active ingredient?
         </p>
         <p className="text-2xl font-semibold tracking-tight text-foreground">
           {current.prompt}
