@@ -56,12 +56,11 @@ export default function PracticeSession({ drugs, onRefresh }: PracticeSessionPro
 
     // Generate questions: mix of brand→ingredient and ingredient→brand
     const qs: Question[] = selected.map((drug) => {
-      const type: QuestionType = Math.random() > 0.5 ? "brand_to_ingredient" : "ingredient_to_brand";
       return {
         drug,
-        type,
-        prompt: type === "brand_to_ingredient" ? drug.brand_name : drug.active_ingredient,
-        answer: type === "brand_to_ingredient" ? drug.active_ingredient : drug.brand_name,
+        type: "brand_to_ingredient" as QuestionType,
+        prompt: drug.brand_name,
+        answer: drug.active_ingredient,
       };
     });
 
