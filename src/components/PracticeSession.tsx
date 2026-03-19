@@ -229,7 +229,7 @@ export default function PracticeSession({ drugs, onRefresh }: PracticeSessionPro
       {/* Card */}
       <div className={`card-surface p-6 w-full space-y-4 ${shakeCard ? "animate-shake" : ""} ${feedback === "correct" ? "ring-2 ring-success/30" : ""}`}>
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-          {current.type === "brand_to_ingredient" ? "What is the active ingredient?" : "What is the brand name?"}
+          What is the active ingredient?
         </p>
         <p className="text-2xl font-semibold tracking-tight text-foreground">
           {current.prompt}
