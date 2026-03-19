@@ -22,7 +22,7 @@ interface PracticeSessionProps {
   onRefresh: () => void;
 }
 
-type QuestionType = "brand_to_ingredient" | "ingredient_to_brand";
+type QuestionType = "brand_to_ingredient";
 
 interface Question {
   drug: Drug;
